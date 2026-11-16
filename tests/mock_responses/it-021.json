@@ -1,0 +1,24 @@
+{
+  "status": "completed",
+  "extraction": {
+    "request_id": "IT-021",
+    "request_date": "2026-10-22",
+    "kind": "new",
+    "requester": "Maya Chen",
+    "team": "Analytics",
+    "system": "Atlas",
+    "environment": "staging",
+    "permission": "read",
+    "business_purpose": "I need to compare the weekly conversion dashboard with the spreadsheet after the event definitions changed.",
+    "start_date": "2026-10-23",
+    "end_date": "2026-11-06",
+    "manager": "Priya Shah",
+    "supporting_quotes": [
+      "Please open request IT-021 dated 2026-10-22 for me, Maya Chen in Analytics.",
+      "For a new grant, let me read Atlas in staging between 2026-10-23 and 2026-11-06.",
+      "Priya Shah is my manager.",
+      "I need to compare the weekly conversion dashboard with the spreadsheet after the event definitions changed."
+    ],
+    "issues": []
+  }
+}
