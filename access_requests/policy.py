@@ -44,4 +44,6 @@ def route(extraction, message, document_id, policy=None):
         return decision('needs-information', 'IT Service Desk', 'clarify')
     if extraction['environment'] == 'production' or extraction['permission'] in ('write', 'admin'):
         return decision('review', 'Security Review', 'review-risk-then-owner')
+    if policy and 'Complete staging/read requests go to Security Review' in policy:
+        return decision('review', 'Security Review', 'review-risk-then-owner')
     return decision('review', 'System Owner', 'review-request')
