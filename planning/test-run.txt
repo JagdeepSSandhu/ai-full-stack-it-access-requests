@@ -1,0 +1,49 @@
+test_a_mock_reply_is_read_with_no_key_and_no_network (test_starter.MockResponse.test_a_mock_reply_is_read_with_no_key_and_no_network) ... ok
+test_each_request_export_has_message_text_and_a_hash (test_starter.SuppliedFiles.test_each_request_export_has_message_text_and_a_hash) ... ok
+test_the_schema_names_the_fields_it_requires (test_starter.SuppliedFiles.test_the_schema_names_the_fields_it_requires) ... ok
+test_T01_scripted_events_and_origin_without_network (test_step01_mock.MockProviderTests.test_T01_scripted_events_and_origin_without_network) ... ok
+test_T02_schema_dates_and_exact_quotes (test_step02_validation.ValidationTests.test_T02_schema_dates_and_exact_quotes) ... ok
+test_T03_original_bytes_and_message_not_metadata (test_step02_validation.ValidationTests.test_T03_original_bytes_and_message_not_metadata) ... ok
+test_T04_200_words (test_step02_validation.ValidationTests.test_T04_200_words) ... ok
+test_T05_complete (test_step03_policy.PolicyTests.test_T05_complete) ... ok
+test_T06_missing_dates (test_step03_policy.PolicyTests.test_T06_missing_dates) ... ok
+test_T07_conflicts (test_step03_policy.PolicyTests.test_T07_conflicts) ... ok
+test_T08_override_and_precedence (test_step03_policy.PolicyTests.test_T08_override_and_precedence) ... ok
+test_T09_paraphrase (test_step03_policy.PolicyTests.test_T09_paraphrase) ... ok
+test_T10_relative (test_step03_policy.PolicyTests.test_T10_relative) ... ok
+test_T11_corrections (test_step03_policy.PolicyTests.test_T11_corrections) ... ok
+test_T12_new_permission (test_step03_policy.PolicyTests.test_T12_new_permission) ... ok
+test_T13_identity (test_step03_policy.PolicyTests.test_T13_identity) ... ok
+test_T14_withdrawal (test_step03_policy.PolicyTests.test_T14_withdrawal) ... ok
+test_T15_other_kind (test_step03_policy.PolicyTests.test_T15_other_kind) ... ok
+test_T16_date_order (test_step03_policy.PolicyTests.test_T16_date_order) ... ok
+test_T17_missing_manager (test_step03_policy.PolicyTests.test_T17_missing_manager) ... ok
+test_T18_each_required_fact (test_step03_policy.PolicyTests.test_T18_each_required_fact) ... ok
+test_T19_risk (test_step03_policy.PolicyTests.test_T19_risk) ... ok
+test_T20_corpus (test_step03_policy.PolicyTests.test_T20_corpus) ... ok
+test_T21_malformed (test_step04_failures.FailureTests.test_T21_malformed) ... ok
+test_T22_independent_failure (test_step04_failures.FailureTests.test_T22_independent_failure) ... ok
+test_T23_refusal (test_step04_failures.FailureTests.test_T23_refusal) ... ok
+test_T24_interrupted (test_step04_failures.FailureTests.test_T24_interrupted) ... ok
+test_T25_contract_status_and_redaction (test_step05_provider.ProviderContractTests.test_T25_contract_status_and_redaction) ... ok
+test_T26_records_reopen_and_links (test_step06_store.StoreTests.test_T26_records_reopen_and_links) ... ok
+test_T27_unchanged_reuses (test_step06_store.StoreTests.test_T27_unchanged_reuses) ... ok
+test_T28_source_change_retains_history (test_step06_store.StoreTests.test_T28_source_change_retains_history) ... ok
+test_T29_failed_retry_after_success (test_step06_store.StoreTests.test_T29_failed_retry_after_success) ... ok
+test_T30_batch_omission (test_step06_store.StoreTests.test_T30_batch_omission) ... ok
+test_T31_settings_policy_provenance (test_step06_store.StoreTests.test_T31_settings_policy_provenance) ... ok
+test_T32_overlap_stale_completion_and_publication_crash (test_step07_shared.SharedTests.test_T32_overlap_stale_completion_and_publication_crash) ... ok
+test_T33_slow_call_leaves_other_work_available (test_step08_recovery.RecoveryTests.test_T33_slow_call_leaves_other_work_available) ... ok
+test_T34_killed_worker_resume (test_step08_recovery.RecoveryTests.test_T34_killed_worker_resume) ... ok
+test_T35_transient_retries_and_terminal_failure (test_step08_recovery.RecoveryTests.test_T35_transient_retries_and_terminal_failure) ... ok
+test_T36_workload_accounting (test_step08_recovery.RecoveryTests.test_T36_workload_accounting) ... ok
+test_T37_operator_commands (test_step09_cli.CLITests.test_T37_operator_commands) ... ok
+test_T38_independent_comparison_fixed_denominator (test_step10_accuracy.AccuracyTests.test_T38_independent_comparison_fixed_denominator) ... ok
+test_T39_documented_mock_commands_and_artifacts (test_step11_handover.HandoverTests.test_T39_documented_mock_commands_and_artifacts) ... ok
+
+----------------------------------------------------------------------
+Ran 42 tests in 49.358s
+
+OK
+MOCK workload: 400 messages, workers=4, processing_seconds=4.381
+MOCK workload: 2000 messages, workers=4, processing_seconds=30.804
