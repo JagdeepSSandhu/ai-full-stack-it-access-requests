@@ -37,7 +37,9 @@ class Store:
                     event TEXT, token TEXT, recorded REAL);
             ''')
             columns = {row['name'] for row in db.execute('PRAGMA table_info(attempts)')}
-            for name, declaration in [('token','TEXT'), ('lease_until','REAL NOT NULL DEFAULT 0')]:
+            for name, declaration in [('token','TEXT'), ('lease_until','REAL NOT NULL DEFAULT 0'),
+                                      ('available_after','REAL NOT NULL DEFAULT 0'),
+                                      ('retry_count','INTEGER NOT NULL DEFAULT 0')]:
                 if name not in columns:
                     db.execute(f'ALTER TABLE attempts ADD COLUMN {name} {declaration}')
 
@@ -91,7 +93,8 @@ class Store:
             db.execute('BEGIN IMMEDIATE')
             row = db.execute('SELECT a.* FROM documents d JOIN attempts a ON a.id=d.latest '
                 "WHERE (a.state='pending' OR (a.state='running' AND a.lease_until<=?)) "
-                'AND (? IS NULL OR a.id=?) ORDER BY a.id LIMIT 1', (now,attempt_id,attempt_id)).fetchone()
+                'AND a.available_after<=? AND (? IS NULL OR a.id=?) ORDER BY a.id LIMIT 1',
+                (now,now,attempt_id,attempt_id)).fetchone()
             if row is None:
                 return None
             token = uuid.uuid4().hex
@@ -131,6 +134,21 @@ class Store:
                 return self.finish(attempt, process(document, provider, policy), token=claim['token'])
         return next((r for r in self.current() if r['document_id'] == document['document_id']), None)
 
+    def retry_later(self, attempt_id, *, delay):
+        with self.connection() as db:
+            db.execute('BEGIN IMMEDIATE')
+            row = db.execute('SELECT a.* FROM attempts a JOIN documents d ON d.latest=a.id '
+                             "WHERE a.id=? AND a.state='done'", (attempt_id,)).fetchone()
+            if row is None:
+                return None
+            new = db.execute('INSERT INTO attempts(document_id,source_sha256,raw,fingerprint,settings,'
+                             'policy,policy_version,created,available_after,retry_count) '
+                             'VALUES(?,?,?,?,?,?,?,?,?,?)',
+                (row['document_id'],row['source_sha256'],row['raw'],row['fingerprint'],row['settings'],
+                 row['policy'],row['policy_version'],time.time(),time.time()+delay,row['retry_count']+1)).lastrowid
+            db.execute('UPDATE documents SET latest=? WHERE document_id=?',(new,row['document_id']))
+            return new
+
     def current(self):
         with self.connection() as db:
             rows = db.execute('SELECT a.result FROM documents d JOIN attempts a ON a.id=d.latest '
@@ -139,7 +157,8 @@ class Store:
 
     def pending(self):
         with self.connection() as db:
-            rows = db.execute('SELECT a.id AS attempt_id,a.document_id,a.state,a.source_sha256 '
+            rows = db.execute('SELECT a.id AS attempt_id,a.document_id,a.state,a.source_sha256,'
+                              'a.available_after,a.retry_count '
                               'FROM documents d JOIN attempts a ON a.id=d.latest '
                               'WHERE a.state != ? ORDER BY a.id', ('done',)).fetchall()
         return [dict(row) for row in rows]
