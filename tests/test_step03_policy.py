@@ -63,6 +63,7 @@ class PolicyTests(unittest.TestCase):
         from access_requests.policy import route
         result, doc = self.check(5)
         result['extraction']['request_id'] = None
+        result['extraction']['supporting_quotes'] = [q.replace('IT-005', '') for q in result['extraction']['supporting_quotes']]
         self.assertEqual(route(result['extraction'], doc['message'].replace('IT-005', ''), doc['document_id'])['next_action'], 'clarify')
     def test_T15_other_kind(self):
         from access_requests.policy import route
