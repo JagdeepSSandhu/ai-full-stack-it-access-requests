@@ -42,12 +42,19 @@ def parser():
     accuracy = commands.add_parser('accuracy')
     accuracy.add_argument('--expected',type=Path,default=ROOT/'tests/expected.json')
     accuracy.add_argument('--report',type=Path)
+    ready = commands.add_parser('readiness')
+    ready.add_argument('repository_link')
     return p
 
 
 def main(argv=None):
     args = parser().parse_args(argv)
     try:
+        if args.command == 'readiness':
+            from .submission import readiness
+            result = readiness(ROOT,args.repository_link)
+            print(json.dumps(result,indent=2))
+            return 0 if result['artifacts_ready'] and result['root_link_valid'] else 2
         store = Store(args.db)
         if args.command == 'accuracy':
             from .accuracy import compare, write_report

@@ -40,10 +40,11 @@ test_T36_workload_accounting (test_step08_recovery.RecoveryTests.test_T36_worklo
 test_T37_operator_commands (test_step09_cli.CLITests.test_T37_operator_commands) ... ok
 test_T38_independent_comparison_fixed_denominator (test_step10_accuracy.AccuracyTests.test_T38_independent_comparison_fixed_denominator) ... ok
 test_T39_documented_mock_commands_and_artifacts (test_step11_handover.HandoverTests.test_T39_documented_mock_commands_and_artifacts) ... ok
+test_T40_required_artifacts_and_root_link (test_step12_submission.SubmissionTests.test_T40_required_artifacts_and_root_link) ... ok
 
 ----------------------------------------------------------------------
-Ran 42 tests in 49.358s
+Ran 43 tests in 51.727s
 
 OK
-MOCK workload: 400 messages, workers=4, processing_seconds=4.381
-MOCK workload: 2000 messages, workers=4, processing_seconds=30.804
+MOCK workload: 400 messages, workers=4, processing_seconds=4.605
+MOCK workload: 2000 messages, workers=4, processing_seconds=32.043

@@ -145,3 +145,11 @@ commit hooks. Final facilitator capture verification, a default-branch push and
 Classroom root-link submission require actual external evidence; local tests do
 not prove those actions occurred. Human validation of every spec line remains
 the reviewer's decision.
+
+Run the offline artifact inventory with:
+
+```bash
+python3 -m access_requests readiness https://github.com/JagdeepSSandhu/ai-full-stack-it-access-requests
+```
+
+See deliverables/submission.md for capture evidence and remaining external checks.

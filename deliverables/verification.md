@@ -15,9 +15,9 @@ env -u API_KEY python3 -m access_requests accuracy --report deliverables/accurac
 ```
 
 Use --db and --output global flags for an isolated workspace as in README.md.
-The full suite runs T-01–T-39 at this stage, plus the three preserved starter
-checks. planning/test-run.txt records the actual whole-suite run; T-40 is added
-in the final submission-readiness step.
+The final suite runs T-01–T-40 plus three preserved starter checks.
+planning/test-run.txt records the actual whole-suite run. T-40 checks nonempty
+required artifacts and root-link shape, not external submission completion.
 
 | Cases | Intended assertions/comparisons |
 |---|---|
@@ -30,6 +30,11 @@ in the final submission-readiness step.
 | T-37–T-39 | Real CLI commands operate offline in isolated workspaces; independent comparison detects mutated facts, errors and missing records; handover artifacts match documented configuration |
 
 ## Observed mock results
+
+The final whole-suite run passed all 43 tests in 51.727 seconds. Its T-36 mock
+workload observations were 4.605 seconds for 400 messages and 32.043 seconds for
+2,000 messages, with four workers and no rate cap. planning/test-run.txt is the
+saved output, including the submission-readiness check; no live response was used.
 
 Step-by-step whole-suite checks passed through step 10: 41 tests. The latest
 saved run records the post-documentation suite count and output. No test results
