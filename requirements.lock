@@ -1,0 +1,2 @@
+# Runtime: CPython >=3.11; no third-party packages.
+# The application implements only the schema vocabulary in snapshot.schema.json.
