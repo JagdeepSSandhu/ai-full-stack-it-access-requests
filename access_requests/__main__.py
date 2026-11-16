@@ -39,6 +39,9 @@ def parser():
     retry.add_argument('--attempt', type=int)
     history = commands.add_parser('history')
     history.add_argument('document_id')
+    accuracy = commands.add_parser('accuracy')
+    accuracy.add_argument('--expected',type=Path,default=ROOT/'tests/expected.json')
+    accuracy.add_argument('--report',type=Path)
     return p
 
 
@@ -46,7 +49,15 @@ def main(argv=None):
     args = parser().parse_args(argv)
     try:
         store = Store(args.db)
-        if args.command == 'queue':
+        if args.command == 'accuracy':
+            from .accuracy import compare, write_report
+            expected = json.loads(args.expected.read_text())
+            documents = {p.name:read_export(p) for folder in ['requests','synthetic']
+                         for p in (ROOT/'materials'/folder).glob('*.json')}
+            result = compare(store.current(),expected,documents)
+            if args.report:
+                write_report(args.report,result,expected)
+        elif args.command == 'queue':
             result = {'current':store.current(),'pending':store.pending(),'guidance':GUIDANCE}
         elif args.command == 'history':
             result = store.history(args.document_id)
