@@ -4,6 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 import sqlite3
+import shlex
 import time
 import uuid
 from .intake import process
@@ -114,6 +115,10 @@ class Store:
         attempt = self.attempt(attempt_id)
         result = {**result, 'attempt_id': attempt_id, 'source_sha256': attempt['source_sha256'],
                   'settings': json.loads(attempt['settings']), 'policy_version': attempt['policy_version']}
+        if result['status'] == 'error':
+            result['retry_command'] = ('python3 -m access_requests --db '+shlex.quote(str(self.path))+
+                ' --provider '+shlex.quote(result['settings'].get('provider','mock'))+
+                ' retry '+shlex.quote(attempt['document_id'])+' --attempt '+str(attempt_id))
         with self.connection() as db:
             db.execute('BEGIN IMMEDIATE')
             active = db.execute('SELECT a.token,a.state,a.lease_until,d.latest FROM attempts a '
