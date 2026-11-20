@@ -1,0 +1,6 @@
+Use the plan-from-spec skill on planning/spec.md. Rewrite planning/plan.md only; write no code
+and no tests yet.
+
+---
+
+please add and commit the planning/plan.md in git with message that 'updated using the newer GPT-6.1 Terra model'
