@@ -1,0 +1,9 @@
+please do a git fetch
+
+---
+
+please help me fix: Your extraction prompt asks for direct structured JSON without step-by-step reasoning fields, which keeps output clean. It relies on instructions alone, with no worked examples of input and output pairs yet.
+
+---
+
+please commit changes to git
