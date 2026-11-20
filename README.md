@@ -1,6 +1,6 @@
 # AI Full Stack Challenge — IT Access Requests
 
-I got everything done by not challenging Codex. I said yes to everything it wanted.
+The implementation uses mock-backed checks and a human review queue. Known limitations and follow-up decisions are documented with the evidence.
 
 ## Setup and reproducible mock intake
 
@@ -155,3 +155,5 @@ python3 -m access_requests readiness https://github.com/JagdeepSSandhu/ai-full-s
 ```
 
 See deliverables/submission.md for capture evidence and remaining external checks.
+
+See [assessment follow-up](deliverables/assessment-followup.md) for data handling risks, a conditional regulated-repository handoff, and an unrun paired evaluation design.

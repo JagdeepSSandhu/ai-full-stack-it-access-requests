@@ -12,10 +12,14 @@ validate source correctness, capture integrity, remote state or Classroom state.
 The enabled Entire capture setup is tracked in .entire/settings.json and
 .codex/hooks.json. The session snapshot is deliverables/session.jsonl; metadata,
 its SHA-256 and the commit present at snapshot time are in session-capture.json.
-The snapshot is bounded to the transcript available when exported. Each build
-commit's automatic Entire-Checkpoint footer links the continuing session; no
-manual checkpoint was created. A final commit cannot embed its own hash inside
-an artifact that contributes to that hash.
+The snapshot is bounded to the transcript available when exported.
+`deliverables/session-assessment.jsonl` is a filtered Entire export covering
+the initial assessment and plan revision. It retains the session ID, turn
+model and effort, user and assistant messages, and selected offline verification
+results. System and developer instructions, internal reasoning, raw tool payloads,
+and personal contact details are excluded. Use the final commit's automatic
+Entire checkpoint for facilitator pairing. A final commit cannot embed its own
+hash inside an artifact that contributes to that hash.
 
 Final external checks remain pending:
 
