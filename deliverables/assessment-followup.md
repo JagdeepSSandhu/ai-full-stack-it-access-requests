@@ -2,7 +2,12 @@
 
 This is a review and delivery proposal, not a certification or an implemented federal control. Northstar and its supplied requests are fictional; the assignment does not establish that this repository holds federal tax information, has an ATO, or is subject to a particular federal program. The TO52 federal requirements below are taken from the assessment's program context, not inferred from the Northstar materials or claimed to come from a studied source.
 
-## Data and untrusted input in this project
+## Data and untrusted input in the original assessment
+
+The observations in this section describe the pre-fix adapter. The privacy
+follow-up added minimized model input, an approved endpoint, protected review
+storage, and filtered session exports. See [provider behavior](../docs/provider.md)
+and the [operator instructions](../README.md#inspect-and-recover).
 
 The requester's and manager's names, team, system, permission, dates, business purpose and exact supporting quotes can reveal an employee's identity, job function and privileged access. In particular, joining the named requester to a production/admin request and its start/end dates can reveal who has privileged access and when; a credential-only redaction would miss that risk. Use the fictional fixtures for demonstrations and session captures. Before using actual customer records, the data owner must approve the processing purpose and destination, minimize or tokenize identifying fields before any prompt, evidence or log, and restrict access and retention for the source, SQLite history and exported snapshots. Preserve a protected mapping only in an authorized environment; do not commit it. If exact quotes are needed for review, keep them in that environment rather than publishing them as evidence. The current application sends the entire message to the configured live provider and stores source bytes and quotes locally; it does **not** implement this redaction or an authorization boundary. Do not use it with real sensitive records until those controls are supplied and verified.
 

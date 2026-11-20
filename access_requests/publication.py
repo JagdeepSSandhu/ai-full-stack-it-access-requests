@@ -5,6 +5,8 @@ import os
 from pathlib import Path
 import uuid
 
+from .review_files import private_directory, private_file
+
 
 def sync_directory(path):
     descriptor = os.open(path, os.O_RDONLY)
@@ -15,9 +17,8 @@ def sync_directory(path):
 
 
 def publish(store, directory, *, hook=lambda stage: None):
-    directory = Path(directory)
-    directory.mkdir(parents=True, exist_ok=True)
-    with (directory/'.publish.lock').open('a') as lock:
+    directory = private_directory(directory)
+    with os.fdopen(private_file(directory/'.publish.lock', os.O_RDWR | os.O_CREAT), 'r+') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         with store.connection() as db:
             db.execute('BEGIN')
@@ -28,13 +29,14 @@ def publish(store, directory, *, hook=lambda stage: None):
                        'settings,policy_version,result FROM attempts ORDER BY id')]
         queue = [{k:r[k] for k in ('document_id','source_sha256','attempt_id','status','owner','next_action',
                                   'error','policy_version')} for r in records]
-        generation = directory/'.generations'/uuid.uuid4().hex
-        generation.mkdir(parents=True)
+        generations = private_directory(directory/'.generations')
+        generation = generations/uuid.uuid4().hex
+        generation.mkdir(mode=0o700)
         contents = {'extractions.jsonl': ''.join(json.dumps(r)+'\n' for r in records),
                     'queue.json':json.dumps(queue,indent=2)+'\n',
                     'history.jsonl': ''.join(json.dumps(r)+'\n' for r in history)}
         for name, content in contents.items():
-            with (generation/name).open('w') as stream:
+            with os.fdopen(private_file(generation/name, os.O_WRONLY | os.O_CREAT | os.O_EXCL), 'w') as stream:
                 stream.write(content)
                 stream.flush()
                 os.fsync(stream.fileno())
@@ -42,7 +44,10 @@ def publish(store, directory, *, hook=lambda stage: None):
         sync_directory(generation.parent)
         for name in contents:
             path = directory/name
-            if not path.is_symlink():
+            if path.is_symlink():
+                if path.readlink() != Path('current')/name:
+                    raise ValueError('Review output has an unexpected symlink')
+            else:
                 if path.exists():
                     raise ValueError(f'Refusing to replace existing regular output: {path}')
                 path.symlink_to('current/'+name)

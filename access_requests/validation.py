@@ -12,7 +12,10 @@ SCALARS = [key for key in SCHEMA['properties'] if key not in ('issues', 'support
 def read_export(path):
     path = Path(path)
     raw = path.read_bytes()
-    export = json.loads(raw.decode('utf-8'))
+    try:
+        export = json.loads(raw.decode('utf-8'))
+    except ValueError as exc:
+        raise ValueError('Export must be valid UTF-8 JSON') from exc
     if not isinstance(export, dict) or not isinstance(export.get('message'), str):
         raise ValueError('Export requires a message string')
     return {'document_id': path.name, 'source_sha256': hashlib.sha256(raw).hexdigest(),

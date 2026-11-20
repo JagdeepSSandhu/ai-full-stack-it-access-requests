@@ -1,7 +1,8 @@
 """Compare measured outputs with independently authored, source-grounded facts."""
 from collections import Counter
 import json
-from pathlib import Path
+import os
+from .review_files import external_path, private_directory, private_file
 from .validation import SCALARS
 
 
@@ -52,7 +53,7 @@ def write_report(path, report, expected):
         'Expected facts were authored from planning/plan.md E01–E21 and the quoted messages/policy, '
         'before application output was measured. tests/expected.json is the independent manifest; '
         'deliverables/expected.json is its submitted copy. The synthetic export is materials/synthetic/IT-021.json.', '',
-        'Command: `env -u API_KEY python3 -m access_requests accuracy --report deliverables/accuracy.md`.', '',
+        'Command: `env -u API_KEY python3 -m access_requests accuracy`.', '',
         'Compare all 12 scalar fields literally, including expected nulls: 21 × 12 = 252 opportunities. '
         'Missing/error extractions mismatch all 12 fields; missing keys mismatch even expected null. '
         'Missing documents remain in the denominator. Exact business-purpose excerpts are predeclared; '
@@ -71,5 +72,8 @@ def write_report(path, report, expected):
         cells = [name,json.dumps(ground['extraction'],ensure_ascii=False),json.dumps(ground['route']),ground['evidence']]
         lines.append('| '+' | '.join(cell.replace('|','\\|').replace('\n',' ') for cell in cells)+' |')
     lines += ['', '## Observed mock comparisons', '', '```json',json.dumps(report,indent=2), '```','']
-    Path(path).parent.mkdir(parents=True,exist_ok=True)
-    Path(path).write_text('\n'.join(lines))
+    path = external_path(path)
+    private_directory(path.parent)
+    with os.fdopen(private_file(path, os.O_WRONLY | os.O_CREAT), 'w') as stream:
+        stream.truncate(0)
+        stream.write('\n'.join(lines))

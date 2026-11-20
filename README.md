@@ -14,7 +14,7 @@ the supplied snapshot.schema.json, plus date and supporting-quote checks.
 python3 --version
 env -u API_KEY python3 -m access_requests intake materials/requests materials/synthetic
 env -u API_KEY python3 -m access_requests queue
-env -u API_KEY python3 -m access_requests accuracy --report deliverables/accuracy.md
+env -u API_KEY python3 -m access_requests accuracy
 env -u API_KEY python3 -m unittest discover -s tests -v
 ```
 
@@ -41,34 +41,43 @@ python3 -m access_requests retry IT-001.json
 python3 -m access_requests export
 ```
 
-Queue output includes completed/error current records and a separate pending
-list. All successes await human review. A manager is a contact, not an approval.
+Queue output shows attempt IDs, status, routing and pending work. Use the same
+attempt ID to find full records in the protected snapshots. All successes await
+human review. A manager is a contact, not an approval.
 Security Review examines risk and forwards its recommendation to the system
 owner for a decision; the application never grants access or approves requests.
 
-SQLite at state/requests.db is authoritative. Current output snapshots are
-deliverables/extractions.jsonl and deliverables/queue.json, linked by document_id,
-source_sha256 and attempt_id. `export` publishes both from one database snapshot.
-Each is a symlink through deliverables/current to one immutable generation;
-resolve current once before opening both files if publication may occur between
-reads. Prior attempts are separate in SQLite, available through `history`, and
-included in deliverables/history.jsonl. Source bytes, settings and policy version
-are retained in the database. Completed results are reused only when source and
-relevant processing inputs are unchanged. Batch omissions do not withdraw records.
+The default review root is
+`${XDG_STATE_HOME:-$HOME/.local/state}/northstar-access-requests/<provider>/`.
+SQLite at `requests.db` is authoritative. `results/extractions.jsonl` and
+`results/queue.json` share document IDs, source hashes and attempt IDs.
+`results/history.jsonl` contains the full prior results and provider settings.
+Each file points through `results/current` to one immutable generation. Resolve
+`current` once when reading several files during publication.
+
+The database retains source bytes and restored records. Review directories and
+files are owner-only, and runtime artifacts must stay outside Git worktrees.
+Run real intake from a restricted operator environment where coding agents and
+session recorders have no access to the input or review directory. If you used
+the previous in-repo database path, copy the database into a private directory
+while intake is stopped, then use `--db` to point at the copy. Publish into a
+fresh private output directory. Completed results are reused only when source
+and processing inputs are unchanged.
 
 `intake`, `resume` and `retry` publish snapshots when the command finishes. During
 intake use `queue` to inspect ready work, or run `export` for a partial snapshot.
 Existing committed snapshots can be inspected without a database; generate a new
 local database with intake before using the database-backed queue command.
 
-Every terminal extraction error includes an explicit retry_command with its
-database, document and attempt. For an isolated workspace, put global flags before
-the command, for example:
+Detailed extraction errors and retry commands are available in the protected
+snapshots. You can retry using the numeric attempt ID from CLI output. To run
+with isolated review state, put global flags before the command.
 
 ```bash
-python3 -m access_requests --db /tmp/northstar.db --output /tmp/northstar-results intake materials/requests materials/synthetic
-python3 -m access_requests --db /tmp/northstar.db queue
-python3 -m access_requests --db /tmp/northstar.db retry IT-001.json --attempt 1
+review_dir=$(mktemp -d)
+python3 -m access_requests --db "$review_dir/requests.db" intake materials/requests materials/synthetic
+python3 -m access_requests --db "$review_dir/requests.db" queue
+python3 -m access_requests --db "$review_dir/requests.db" retry --attempt 1
 ```
 
 An explicit retry creates a new attempt, even after success. Failed retries show
@@ -88,21 +97,32 @@ directly and intercept transport, without reading API_KEY or contacting a model.
 See docs/provider.md and deliverables/request-evidence.json for the contract and
 credential-redacted request example. No live observation has been made.
 
-For an optional operator-run provider intake, with the supplied environment set:
+Live intake sends a limited vocabulary of access-request terms and request-local
+placeholders. Date and request ID values, other free-text words, and the office
+policy stay local. The model can still see access concepts such as `production`
+and `admin`, plus the ordering of the clues. Use live mode only if that data and
+the destination are approved. Model extraction quality after minimization has
+only been checked with intercepted responses. Unclear facts go to human review.
+
+To try live mode using a fictional export, set the supplied credential in the
+operator environment first.
 
 ```bash
-python3 -m access_requests --provider openai --db state/live.db --output state/live-results --rate 1 intake materials/requests
+sample_dir=$(mktemp -d)
+cp materials/requests/IT-001.json "$sample_dir/"
+python3 -m access_requests --provider openai --rate 1 intake "$sample_dir"
+python3 -m access_requests --provider openai queue
 ```
 
 | Setting | Default and purpose |
 |---|---|
 | API_KEY | Required only for live provider authentication; never stored in settings or request evidence |
 | MODEL_ID | gpt-4.1-2025-04-14 |
-| MODEL_ENDPOINT | https://api.openai.com/v1/responses |
+| MODEL_ENDPOINT | Approved HTTPS endpoint `https://api.openai.com/v1/responses`; other values are rejected |
 | MODEL_TEMPERATURE | 0 |
 | MAX_OUTPUT_TOKENS | 2500 |
 | MODEL_TIMEOUT | 30 seconds |
-| --db / --output | state/requests.db / deliverables |
+| --db / --output | Per-provider `requests.db` / `results/` alongside the selected database; both outside Git |
 | --provider / --fixtures | mock / tests/mock_responses/ |
 | --workers / --rate | 4 concurrent workers / unlimited starts per second; rate is per process |
 | --retries / --backoff | 2 transient retries / 1-second exponential base delay |
@@ -121,8 +141,8 @@ Provider HTTP diagnostics are not recorded; errors use redacted summaries.
 
 ## Operating limits and verification
 
-Shared operation supports overlapping processes on a single host using one local
-SQLite database. It does not support network filesystems or independent regional
+Shared operation supports overlapping processes under the review account on a
+single host using one local SQLite database. It does not support network filesystems or independent regional
 databases. Latest intake registration order determines the current source revision;
 export timestamps do not order business updates. An obsolete worker is fenced from
 changing the current result. A killed worker's claim can be recovered after its
@@ -142,11 +162,10 @@ for the supplied benchmark and paraphrase, not an evaluation of arbitrary intake
 messages. It counts all 252 scalar opportunities, even when extraction fails or a
 record is missing. Alternate purpose paraphrases need human source review.
 
-The coding session is captured by the repository's enabled Entire setup and its
-commit hooks. Final facilitator capture verification, a default-branch push and
-Classroom root-link submission require actual external evidence; local tests do
-not prove those actions occurred. Human validation of every spec line remains
-the reviewer's decision.
+Entire captures development sessions through the repository hooks. The
+submission includes filtered excerpts from the build, assessment and privacy
+work. Use the handoff index to find the user directions and original checkpoint
+references. Keep real operating data outside that capture environment.
 
 Run the offline artifact inventory with:
 

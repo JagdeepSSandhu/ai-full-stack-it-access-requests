@@ -2,13 +2,14 @@
 from contextlib import contextmanager
 import hashlib
 import json
-from pathlib import Path
+import os
 import sqlite3
 import shlex
 import time
 import uuid
 from .intake import process
-from .prompt import POLICY_TEXT, PROMPT
+from .prompt import LIVE_PROMPT, POLICY_TEXT, PROMPT
+from .review_files import external_path, private_directory, private_file
 from .validation import SCHEMA
 
 
@@ -23,8 +24,9 @@ def production_settings(configuration):
 
 class Store:
     def __init__(self, path):
-        self.path = Path(path)
-        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path = external_path(path)
+        private_directory(self.path.parent)
+        os.close(private_file(self.path, os.O_RDWR | os.O_CREAT))
         with self.connection() as db:
             db.executescript('''
                 CREATE TABLE IF NOT EXISTS documents(document_id TEXT PRIMARY KEY, latest INTEGER);
@@ -61,8 +63,9 @@ class Store:
         from .policy import validate_policy
         validate_policy(policy)
         settings = production_settings(configuration)
+        prompt = LIVE_PROMPT if settings.get('provider') == 'openai' else PROMPT
         fingerprint = digest(json.dumps({'source': document['source_sha256'], 'settings': settings,
-                        'policy': digest(policy), 'prompt': digest(PROMPT), 'schema': SCHEMA}, sort_keys=True))
+                        'policy': digest(policy), 'prompt': digest(prompt), 'schema': SCHEMA}, sort_keys=True))
         with self.connection() as db:
             db.execute('BEGIN IMMEDIATE')
             old = db.execute('SELECT a.* FROM documents d JOIN attempts a ON a.id=d.latest '

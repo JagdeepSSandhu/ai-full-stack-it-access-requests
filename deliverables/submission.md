@@ -9,17 +9,25 @@ python3 -m access_requests readiness https://github.com/JagdeepSSandhu/ai-full-s
 The inventory checks nonempty required files and the root-link shape. It does not
 validate source correctness, capture integrity, remote state or Classroom state.
 
-The enabled Entire capture setup is tracked in .entire/settings.json and
-.codex/hooks.json. The session snapshot is deliverables/session.jsonl; metadata,
-its SHA-256 and the commit present at snapshot time are in session-capture.json.
-The snapshot is bounded to the transcript available when exported.
-`deliverables/session-assessment.jsonl` is a filtered Entire export covering
-the initial assessment and plan revision. It retains the session ID, turn
-model and effort, user and assistant messages, and selected offline verification
-results. System and developer instructions, internal reasoning, raw tool payloads,
-and personal contact details are excluded. Use the final commit's automatic
-Entire checkpoint for facilitator pairing. A final commit cannot embed its own
-hash inside an artifact that contributes to that hash.
+## How the user directed the work
+
+The files below contain filtered records from the actual Entire sessions.
+Each record includes its original transcript line number. The export keeps the
+user directions and selected responses and verification excerpts. Account IDs,
+workspace paths, and raw tool payloads were removed.
+
+| User direction | Session evidence |
+|---|---|
+| Specified the source documents, requirement table, and verification column | [Build session, lines 3–6](session.jsonl#L3-L6) |
+| Chose the plan-from-spec skill and limited that turn to the plan | [Build session, lines 8–12](session.jsonl#L8-L12) |
+| Required the plan order, failing tests first, separate commits, and mock-only development | [Build session, lines 14 onward](session.jsonl#L14) |
+| Provided grading feedback and requested a plan revision | [Assessment session, lines 3 and 9](session-assessment.jsonl#L3) |
+| Requested the PII review, directed the fixes, shared the rubric feedback, and authorized the commit | [Privacy follow-up session](session-privacy.jsonl) |
+
+`session-capture.json` gives the build export checksum and original capture
+reference. The privacy follow-up export ends at its pre-commit snapshot. Use the
+new commit's automatic Entire checkpoint to verify the commit pairing. Run real
+intake from a restricted operator environment outside this capture setup.
 
 Final external checks remain pending:
 
@@ -32,5 +40,4 @@ Final external checks remain pending:
 3. Submit only the root repository link above to the Classroom assignment and
    inspect that actual submission (C-07).
 
-No remote push or Classroom submission is asserted by this handoff. Human
-validation of each spec line is also separate from a passing automated suite.
+The facilitator can use the session index above when reviewing the submission.

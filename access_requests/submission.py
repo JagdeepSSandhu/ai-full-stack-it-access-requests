@@ -5,10 +5,12 @@ import re
 REQUIRED = (
     'README.md','requirements.lock','snapshot.schema.json',
     *('access_requests/'+name+'.py' for name in ['__init__','__main__','providers','openai_provider',
-       'prompt','validation','policy','intake','store','scheduler','publication','accuracy','submission']),
+       'prompt','minimization','validation','policy','intake','review_files','store',
+       'scheduler','publication','accuracy','submission']),
     'deliverables/extractions.jsonl','deliverables/queue.json','deliverables/accuracy.md',
     'deliverables/expected.json','deliverables/request-evidence.json','deliverables/verification.md',
     'deliverables/session.jsonl','deliverables/session-capture.json',
+    'deliverables/session-assessment.jsonl','deliverables/session-privacy.jsonl',
     'planning/spec.md','planning/plan.md','planning/test-run.txt',
     '.codex/hooks.json','.entire/settings.json',
 )

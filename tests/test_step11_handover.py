@@ -36,5 +36,6 @@ class HandoverTests(unittest.TestCase):
             report=command('accuracy','--report',str(Path(td)/'accuracy.md'))
             self.assertEqual(report['scalar_matches'],252)
             self.assertEqual(report['issue_matches'],24)
-            self.assertTrue(all(o['response_source']=='mock' for o in report['observations']))
-            self.assertTrue(all(o['configuration']['model']=='fixture-v1' for o in report['observations']))
+            details=json.loads((Path(td)/'accuracy.md').read_text().split('```json\n')[1].split('```')[0])
+            self.assertTrue(all(o['response_source']=='mock' for o in details['observations']))
+            self.assertTrue(all(o['configuration']['model']=='fixture-v1' for o in details['observations']))
