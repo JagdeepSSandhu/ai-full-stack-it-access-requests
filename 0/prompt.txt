@@ -1,0 +1,9 @@
+please build using build planning/plan.md in its step order. Points to consider: 1)for each step, first write the test the plan names, run it and show it failing, then stop; after you commit the failing test (Test first: <step>), write the code until it passes, then stop again so you commit it (Step <n>: <step>); 2) every test uses mock responses saved under tests/mock_responses/, and no test calls the real model or reads API_KEY; 3) the expected values in each test are the expected facts of the test plan, not values copied from a run; 4) after each step, run the whole test suite and stop if anything fails.
+
+---
+
+review and verify the existing implementation
+
+---
+
+fix these 2 material gaps
