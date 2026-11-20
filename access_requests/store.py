@@ -58,6 +58,8 @@ class Store:
             db.close()
 
     def register(self, document, configuration, *, policy=POLICY_TEXT, force=False):
+        from .policy import validate_policy
+        validate_policy(policy)
         settings = production_settings(configuration)
         fingerprint = digest(json.dumps({'source': document['source_sha256'], 'settings': settings,
                         'policy': digest(policy), 'prompt': digest(PROMPT), 'schema': SCHEMA}, sort_keys=True))
@@ -110,6 +112,11 @@ class Store:
             return db.execute("UPDATE attempts SET lease_until=? WHERE id=? AND token=? AND state='running' "
                               'AND id IN (SELECT latest FROM documents)',
                               (time.time()+lease,attempt_id,token)).rowcount == 1
+
+    def release(self, attempt_id, token):
+        with self.connection() as db:
+            db.execute("UPDATE attempts SET state='pending', token=NULL, lease_until=0 "
+                       "WHERE id=? AND token=? AND state='running'", (attempt_id, token))
 
     def finish(self, attempt_id, result, *, token=None):
         attempt = self.attempt(attempt_id)

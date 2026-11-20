@@ -11,9 +11,10 @@ def run(store, provider, *, workers=4, rate=0, retries=2, backoff=1, lease=60, o
         raise ValueError('Invalid scheduler limits')
     limiter = threading.Lock()
     next_call = [0.0]
+    stop = threading.Event()
 
     def worker():
-        while True:
+        while not stop.is_set():
             claim = store.claim(lease=lease)
             if claim is None:
                 if not store.pending():
@@ -21,6 +22,8 @@ def run(store, provider, *, workers=4, rate=0, retries=2, backoff=1, lease=60, o
                 time.sleep(.02)
                 continue
             if json_settings(claim['settings']) != production_settings(provider.configuration):
+                store.release(claim['id'], claim['token'])
+                stop.set()
                 raise ValueError('Pending attempt settings differ; resume with its original provider settings')
             stopped = threading.Event()
 

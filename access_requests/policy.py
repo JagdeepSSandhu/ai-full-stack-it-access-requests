@@ -1,7 +1,15 @@
 """Deterministic ordered routing after extraction validation."""
 from pathlib import Path
+import hashlib
 import re
 from .validation import validate
+from .prompt import POLICY_TEXT
+
+def validate_policy(policy):
+    supported = {'b949596765aef45377d9f8d0792f9113109b1f811ef4f3be26919c162e1f631a',
+                 '7673aef082135e6b9c2baa64874007923a81f4f0a5b9a3c5143200c42180c0f1'}
+    if hashlib.sha256(policy.encode()).hexdigest() not in supported:
+        raise ValueError('Unsupported policy version; implement and verify its routing rules before intake')
 
 REQUIRED = ('request_id', 'request_date', 'requester', 'team', 'system',
             'environment', 'permission', 'business_purpose', 'start_date', 'end_date', 'manager')
@@ -12,6 +20,7 @@ def decision(status, owner, action):
 
 
 def route(extraction, message, document_id, policy=None):
+    validate_policy(POLICY_TEXT if policy is None else policy)
     validate(extraction, message)
     issues = extraction['issues']
     for field in ['kind', *REQUIRED]:

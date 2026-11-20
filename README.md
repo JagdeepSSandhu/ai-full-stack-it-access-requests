@@ -114,7 +114,9 @@ Relevant model/request settings, prompt, schema, policy and raw-byte source hash
 determine refresh. Logging verbosity and scheduling limits do not affect extracted
 facts. Routing rules are implemented in policy.py; when policy semantics change,
 update and test that implementation alongside policy text, then rerun intake on
-affected documents. Arbitrary new routing rules are not interpreted from prose.
+affected documents. Unsupported policy hashes are rejected before registration;
+update the supported hash only after implementing and testing the new rules.
+Arbitrary new routing rules are not interpreted from prose.
 Provider HTTP diagnostics are not recorded; errors use redacted summaries.
 
 ## Operating limits and verification
