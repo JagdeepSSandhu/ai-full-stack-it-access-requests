@@ -23,6 +23,18 @@ workspace paths, and raw tool payloads were removed.
 | Required the plan order, failing tests first, separate commits, and mock-only development | [Build session, lines 14 onward](session.jsonl#L14) |
 | Provided grading feedback and requested a plan revision | [Assessment session, lines 3 and 9](session-assessment.jsonl#L3) |
 | Requested the PII review, directed the fixes, shared the rubric feedback, and authorized the commit | [Privacy follow-up session](session-privacy.jsonl) |
+| Requested worked extraction examples, then directed the commit and push | [Worked-examples session](session-worked-examples.jsonl) |
+| Requested the docs setup audit, a gap-closure plan, and inclusion of the missing session evidence | [Audit and plan session](session-audit-plan.jsonl) |
+
+The two later exports retain actual user/assistant messages and tool calls/results
+with original transcript line numbers. They omit internal instructions, reasoning,
+duplicate event records and telemetry, and replace local paths and sensitive-shaped
+values (including fictional test values). They are filtered session evidence, not
+reconstructed summaries. [Export manifest](session-evidence.json) records their
+session IDs, snapshot/export checksums, sizes and filtering scope. These snapshots
+end before the evidence commit; its automatic Entire checkpoint supplies the
+subsequent commit/session association. The audit/plan export includes the user's
+authorization to export, commit and push this evidence.
 
 `session-capture.json` gives the build export checksum and original capture
 reference. The privacy follow-up export ends at its pre-commit snapshot. Use the

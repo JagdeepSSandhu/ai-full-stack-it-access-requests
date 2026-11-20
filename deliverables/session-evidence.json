@@ -1,0 +1,25 @@
+{
+  "format": "Filtered native Codex JSONL with original source_line; authentic messages and tool calls/results retained",
+  "scope": "Snapshots before evidence commit; final commit/checkpoint pairing is supplied by Entire automatically",
+  "filtering": "Omit developer/system instructions, reasoning, duplicate event streams, world state and token telemetry; retain user/assistant messages, tool calls/results, session identifier and model/effort. Replace home/workspace paths, credential-shaped strings, email addresses and SSN-shaped identifiers. Fixture identifiers are redacted too.",
+  "sessions": [
+    {
+      "session_id": "01a1f763-b20f-7610-9ed1-22be29078fed",
+      "file": "deliverables/session-audit-plan.jsonl",
+      "source_records": 223,
+      "export_records": 64,
+      "raw_snapshot_sha256": "17192d06b391b5df2601825e72879d4006ffacce8543556c8235974f91e3677b",
+      "export_sha256": "a34d9cfe63c9dc4d64d0e2933bdc4823d68a905140ba64817394b012c0200cb9",
+      "export_bytes": 409379
+    },
+    {
+      "session_id": "01a1f74f-7c84-7af0-a698-a21d7ac8a13f",
+      "file": "deliverables/session-worked-examples.jsonl",
+      "source_records": 278,
+      "export_records": 93,
+      "raw_snapshot_sha256": "a7485d0e205215884b086edf0cc6ad8094f0b13341738bcaf4994fa3609618f3",
+      "export_sha256": "a6d96eb21bd37ad2a4b49a7556c996779d23c6694afdc851d93575667bd0437c",
+      "export_bytes": 118481
+    }
+  ]
+}

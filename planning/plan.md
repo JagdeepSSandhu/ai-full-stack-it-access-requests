@@ -5,6 +5,11 @@ Northstar assignment. The revision sequence starts from the gaps recorded in
 [specification validation](validation.md). A planned check establishes how to
 verify a requirement. Its outcome belongs in the evidence for the revision tested.
 
+The **Gap-closure execution plan (2026-11-20)** below is the next execution
+sequence for the setup audit. It preserves the original build history and test
+IDs. This revision changes planning only; the proposed fixes and evidence refresh
+have not been performed.
+
 ## 1. Choices
 
 - **Runtime:** CPython 3.11 or later on Linux, with standard-library dependencies recorded in `requirements.lock`, for compatibility with the starter tests and the local filesystem publication mechanism.
@@ -91,11 +96,139 @@ to section 3. C-01 onward are checks in section 4.
    deployment is subject to the conditional TO52 overlay below, C-10 gates the
    start of agent work and again gates release.
 
+### Gap-closure execution plan (2026-11-20)
+
+**Starting evidence.** At audited revision `16ca45d`, the prerequisite command
+printed READY and ran 51 tests successfully with API_KEY unset (53.086 seconds).
+Python was 3.12.3 on Linux; tests used saved mocks and intercepted provider
+responses with dummy credentials. This observation is in the audit conversation,
+not the committed test log. `planning/test-run.txt` still records 43 tests, and
+the existing validation records 64 met / 16 not met. Those historical counts
+must be reassessed against the final code. The audit reproduced T-41's missed
+indirect override and benign-quotation false flag using a prepared E01 extraction;
+it did not measure live extraction.
+
+Execute G1 through G6 in order. G2 owns T-41 and T-42; G3 owns T-43, replacing
+their ownership in revision steps 1 and 2 above. The original steps 1–12 and
+T-01–T-40 remain the completed build baseline. For new behavior, follow
+docs/03-implement-and-validate.md: write and run the test first, retain the actual
+failure, let the user commit it, implement the change, run the whole offline suite,
+and let the user commit the passing change. If a new test already passes, record
+that fact. Documentation-only steps use inspection checks. Each next code step
+waits for the preceding suite to pass.
+
+1. **G1 — Restore unresolved questions in the spec.** Source: docs/01-research-to-spec.md
+   step 4; affected spec: R-13–R-16, R-27, R-49–R-54, R-57, R-58, R-61, R-80.
+   **First check: C-11.** Add `## Open questions` to planning/spec.md, preserving
+   the 80 numbered requirements. For each question record the exact source,
+   local findings, what remains open, and who can resolve it. Cover recognized
+   filename identifier formats and descriptive filenames, ambiguous instructions
+   versus benign quotations, unsupported model flags, supported policy updates,
+   the limits of extraction evidence, and facilitator capture/submission details.
+   Consult official tool documentation only when local sources cannot answer a
+   tool-specific question. The export owner resolves filename syntax; the policy
+   owner resolves ambiguous routing. Complete independent work while those
+   answers are pending. Do not implement a guessed policy or add a requirement
+   from an assumption. **Done:** every identified ambiguity has a disposition or
+   named owner and remains visibly open until answered.
+2. **G2 — Fix demonstrated routing errors with regression evidence.** Spec:
+   R-45, R-46, R-54–R-58, R-61, R-66–R-68, R-80. **First tests: T-41 and T-42.**
+   Extend the existing proposed cases through intake and the CLI queue in a
+   temporary review store. With an unflagged E01 mock, the indirect override
+   must produce INSPECT, preserve read access facts and document identity, and
+   retain exact attempted-instruction evidence plus an issue. The benign training
+   quotation and unchanged E01 must retain OWNER. Keep invalid extractions on
+   ERROR before routing, and retain all existing rule-precedence cases. Diagnose
+   source interpretation and evidence handling together; keep one routing
+   decision per policy rule rather than adding independent detectors at several
+   layers. T-42 must preserve the message request ID and flag recognized filename
+   mismatches. Implement alternate filename handling only after G1 resolves its
+   syntax. Proposed fallback handling of unsupported model flags in T-41 also
+   needs the policy owner's disposition. Record unresolved branches as open.
+   **Done:** resolved cases pass from intake through displayed status/owner/action,
+   existing policy cases pass, and C-09 reviews the implementation's maintainability.
+3. **G3 — Verify policy refresh and recovery, then reassess the gap.** Spec:
+   R-27, R-28, R-31. **First test: T-43.** Exercise CLI unchanged reuse, refresh
+   under the existing supported test policy, retained history and producing
+   settings/policy fingerprints, rejection of an unsupported policy without
+   state mutation, and resume with mismatched versus original settings. Record
+   any already-passing case before changing code. Document how a maintainer adds
+   and tests a supported policy version. A requirement to refresh affected results
+   does not itself require interpreting arbitrary policy prose; ask the validation
+   owner to reassess R-27 using the actual source and evidence. **Done:** the CLI
+   evidence demonstrates supported refresh and safe recovery, or a concrete
+   remaining failure is recorded and fixed test first.
+4. **G4 — Reconcile documentation and observation labels.** Spec: R-04, R-11,
+   R-12, R-18, R-29, R-34, R-72. **First checks: C-01, C-03 and C-12.** Compare
+   README.md, docs/provider.md, this plan, request-evidence.json, OpenAIProvider,
+   Projection and review storage. Replace stale full-message claims with the
+   implemented minimized projection and local evidence restoration; describe the
+   access terms/structure still sent and the source/records kept locally. Review
+   runtime paths and provider/model/settings for consistency. Label each recorded
+   result and repair with its revision, configuration and mock/intercepted origin;
+   where historical details cannot be recovered, say so explicitly. **Done:**
+   current behavior agrees across these files and historical observations are
+   distinguishable from current verification. No new automated test is required
+   just to enforce prose wording.
+5. **G5 — Refresh reproducible evidence and validate every requirement.** Spec:
+   all R-01–R-80; prioritize the existing 16 not-met rows. **First checks: C-02,
+   C-03 and C-13; regression suite: T-01–T-43 and all discovered tests.** After
+   G2/G3 changes, run the full verbose suite with API_KEY unset and save its real
+   output in planning/test-run.txt. Record the code revision tested and working
+   tree changes separately from the later evidence commit. In an isolated mock
+   review directory, run intake on the 20 exports plus the authored paraphrase,
+   inspect every queue route against policy rules 1–5, and run the independent
+   accuracy comparator. Update committed fictional example artifacts through the
+   supported publication workflow if affected; keep operational databases and
+   private review state outside Git. Update verification.md and accuracy.md to
+   the observed results and actual configuration. Cross-check all 80 validation
+   rows, refresh test names/file lines, and recalculate counts. The user opens the
+   cited evidence and decides Met/Not met, as block 3 requires. For R-49–R-53,
+   distinguish tested handling of saved outputs from unmeasured model extraction;
+   optional live fictional-input evaluation is a separate activity and is not a
+   prerequisite for mock submission. **Done:** the saved run passes, artifact
+   links/source versions agree, coverage and validation have the same 80 IDs as
+   the spec, and every remaining not-met row names its missing evidence or fix.
+6. **G6 — Finish the submission evidence with the submitter.** Spec: R-13–R-16.
+   **First checks: T-40 (existing), C-05–C-07 and C-14.** Run offline readiness,
+   prepare the final diff/artifact inventory and inspect filtered session evidence.
+   The submitter supplies any missing facilitator capture procedure and confirms
+   the submission destination. At the authorized final commit, use its automatic
+   Entire checkpoint; inspect current CLI help before choosing read-only capture
+   commands. Record the final commit/checkpoint/session association. After the
+   authorized push, verify the remote default branch contains that commit and
+   artifacts; the submitter then submits only the repository root link and
+   retains Classroom confirmation. Record each external outcome separately in
+   submission.md. **Done:** C-05–C-07 have inspectable evidence; otherwise keep the
+   affected validation rows Not met with the specific external action pending.
+   Planning this step does not perform or authorize a push or Classroom submission.
+
+**Completion criteria.** G1–G5 establish local gap closure for the resolved scope;
+G6 establishes submission completion. A passing suite alone cannot establish
+policy interpretation, live extraction accuracy or an external submission. Leave
+unresolved owner questions and unmeasured behavior explicit. The earlier paired
+harness experiment C-08 remains a separate assessment follow-up; it does not
+block the demonstrated routing fixes or the mock submission. C-10 applies only
+to the conditional regulated deployment described below.
+
+G5 saves the final run using the block 3 command (run during implementation):
+
+```bash
+env -u API_KEY python3 -m unittest discover -s tests -v > planning/test-run.txt 2>&1
+```
+
+Require a zero exit status and the final `OK`; record the actual discovered count
+rather than requiring the historical count of 51. The prerequisite check can then
+be rerun to confirm READY. Isolated intake/queue/accuracy commands use the README's
+`--db` and `--output` global flags and a temporary report destination.
+
 ### Data handling and conditional TO52 handoff
 
 Use the provided fictional exports for prompts, mock contracts, tests and session
-evidence. The current provider adapter sends the full message, and SQLite and
-publication retain source bytes or verbatim quotes. Joining requester and manager
+evidence. The current provider adapter sends a minimized projection with
+message-local placeholders; it still exposes access terms and their structure.
+SQLite retains source bytes and restored records, and publication retains exact
+supporting quotes in the protected review store. Joining requester and manager
 to the requested production/admin scope and access dates can expose who may hold
 privileged access during a specific window. Even a masked name can be reidentified
 if the same request ID and dates appear in both a queue export and a session log.
@@ -333,6 +466,38 @@ supplement the automated cases:
   protected-data use, require the data-flow map, control and POA&M disposition,
   any applicable accessibility result, and recorded Cyber sign-off. Route the
   final authorization decision to the designated authorizing official.
+
+- **C-11 (G1):** Inspect the spec's exact `## Open questions` heading, source
+  citations, findings, unresolved decisions and owners. Verify numbered requirement
+  IDs remain unchanged; tool questions reference official documentation when needed.
+- **C-12 (G4):** Trace the actual provider request, placeholder restoration and
+  storage paths into each current documentation claim. Inspect every observation
+  for producing revision, settings and origin, or an explicit unknown.
+- **C-13 (G5):** Compare spec, coverage and validation ID sets (80 each), inspect
+  every Met row's evidence and verify totals. Check the saved verbose run against
+  the current discovered tests and confirm queue/extraction source agreement and
+  the independent benchmark's fixed denominator. Human validation remains required.
+- **C-14 (G6):** Record three separate outcomes: facilitator-compliant final
+  capture pairing, verified remote default-branch contents, and actual Classroom
+  confirmation. A local inventory pass cannot substitute for any of them.
+
+### Setup-audit gap coverage
+
+Workflow instructions below supplement the source-requirement matrix without
+inventing additional R-IDs. The G-steps also address all 16 existing not-met rows.
+
+| Audit gap or unresolved requirement | Execution step | Acceptance evidence |
+|---|---|---|
+| Missing spec Open questions; docs/01 step 4 | G1 | C-11; unresolved questions retain named owners |
+| Missed indirect override and benign-quotation false flag; R-57, R-58, R-80 | G2 | T-41 through intake/queue, C-09; exact source evidence and unchanged business facts |
+| Filename mismatch scope; R-54, R-61 | G1, G2 | Recorded export-owner disposition and T-42 for confirmed formats |
+| Policy refresh evidence; R-27 | G3 | T-43 and documented supported-version workflow |
+| Stale full-message claim and observation labels; R-18 | G4 | C-12 and C-03, current docs agree with implementation |
+| Outdated saved test run; docs/03 part 1 step 4 | G5 | Passing current verbose output in planning/test-run.txt |
+| Stale validation and extraction evidence limits; R-49–R-53 | G5 | C-13, current row evidence/counts, explicit mock versus model distinction |
+| Capture, default-branch push and submission; R-13–R-16 | G6 | C-05–C-07, C-14; separate local and external outcomes |
+
+### Original specification coverage
 
 | Spec line | Step that builds it | Test or check that shows it |
 |---|---|---|
