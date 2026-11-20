@@ -1,0 +1,15 @@
+review the code in this workspace to see if any PII or Sensitive data is being exposed to LLM
+
+---
+
+make the recommended fixes
+
+---
+
+Help me improve this project's score against the rubic. The feedback given is How you directed the work
+0 of 10 met
+Your session logs did not show this yet. Include the AI session logs that cover your work when you submit.
+
+---
+
+commit changes to git
