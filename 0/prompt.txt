@@ -1,0 +1,13 @@
+Please read the instructions in docs/*.md and check if the project has been set up according to instructions
+
+---
+
+please create a plan for addressing these gaps
+
+---
+
+This repo is monitored by entire. I am getting the feedback: 'Your session logs did not show this yet. Include the AI session logs that cover your work when you submit.' How to fix that
+
+---
+
+Please go ahead and run the recommended commands
